@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # Backend API service
+  backend:
+    build: 
+      context: ./toneshift-backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+    environment:
+      - PORT=5000
+      - NODE_ENV=development
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=toneshift
+      - DB_USER=postgres
+      - DB_PASSWORD=qwedsa
+      - JWT_SECRET=your_jwt_secret_key_change_this_in_production
+      - JWT_EXPIRES_IN=7d
+      - OLLAMA_API_URL=http://ollama:11434/api
+      - OLLAMA_MODEL=gemma3:4b
+    volumes:
+      - ./toneshift-backend:/app
+      - /app/node_modules
+
+  # PostgreSQL database
+  postgres:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=qwedsa
+      - POSTGRES_DB=toneshift
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Ollama service for AI model inference
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  postgres_data:
+  ollama_data:
