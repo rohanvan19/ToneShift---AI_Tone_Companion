@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
-import { Text, Card, FAB, ActivityIndicator, TextInput, Menu, IconButton, Dialog, Button, Portal } from 'react-native-paper';
+import { Text, Card, FAB, ActivityIndicator, TextInput, Menu, IconButton, Button, Portal } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { conversationApi } from '../../utils/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '../../utils/ThemeContext';
+import CustomDialog from '../../components/CustomDialog';
 
 const ConversationListScreen = ({ navigation }) => {
   const { theme } = useTheme();
@@ -288,7 +289,10 @@ const ConversationListScreen = ({ navigation }) => {
               <IconButton
                 icon="dots-vertical"
                 size={20}
-                onPress={() => {
+                onPress={(event) => {
+                  // Get the position of the touch event
+                  const { pageX, pageY } = event.nativeEvent;
+                  setMenuPosition({ x: pageX, y: pageY });
                   setSelectedConversation(item);
                   setMenuVisible(true);
                 }}
@@ -325,12 +329,13 @@ const ConversationListScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      {/* Add dialogs */}
+      {/* Menu */}
       <Portal>
         <Menu
           visible={menuVisible}
           onDismiss={() => setMenuVisible(false)}
           anchor={menuPosition}
+          contentStyle={{ marginTop: 30 }} // Add some margin to position it below button
         >
           <Menu.Item 
             onPress={() => {
@@ -350,34 +355,43 @@ const ConversationListScreen = ({ navigation }) => {
             leadingIcon="delete"
           />
         </Menu>
-
-        <Dialog visible={renameDialogVisible} onDismiss={() => setRenameDialogVisible(false)}>
-          <Dialog.Title>Rename Conversation</Dialog.Title>
-          <Dialog.Content>
-            <TextInput
-              value={newTitle}
-              onChangeText={setNewTitle}
-              style={{ marginTop: 10 }}
-              mode="outlined"
-            />
-          </Dialog.Content>
-          <Dialog.Actions>
+      </Portal>
+      
+      {/* Custom dialogs without animations */}
+      <CustomDialog
+        visible={renameDialogVisible}
+        onDismiss={() => setRenameDialogVisible(false)}
+        title="Rename Conversation"
+        content={
+          <TextInput
+            value={newTitle}
+            onChangeText={setNewTitle}
+            style={{ marginTop: 10 }}
+            mode="outlined"
+          />
+        }
+        actions={
+          <>
             <Button onPress={() => setRenameDialogVisible(false)}>Cancel</Button>
             <Button onPress={handleRenameConversation}>Rename</Button>
-          </Dialog.Actions>
-        </Dialog>
-        
-        <Dialog visible={deleteDialogVisible} onDismiss={() => setDeleteDialogVisible(false)}>
-          <Dialog.Title>Delete Conversation</Dialog.Title>
-          <Dialog.Content>
-            <Text>Are you sure you want to delete this conversation? This action cannot be undone.</Text>
-          </Dialog.Content>
-          <Dialog.Actions>
+          </>
+        }
+      />
+      
+      <CustomDialog
+        visible={deleteDialogVisible}
+        onDismiss={() => setDeleteDialogVisible(false)}
+        title="Delete Conversation"
+        content={
+          <Text>Are you sure you want to delete this conversation? This action cannot be undone.</Text>
+        }
+        actions={
+          <>
             <Button onPress={() => setDeleteDialogVisible(false)}>Cancel</Button>
             <Button onPress={handleDeleteConversation} color={colors.error}>Delete</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+          </>
+        }
+      />
       
       {/* Replace the Searchbar with a custom search input */}
       <View style={styles.searchContainer}>

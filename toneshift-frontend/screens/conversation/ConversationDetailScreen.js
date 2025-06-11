@@ -9,12 +9,13 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { Text, TextInput, IconButton, Menu, Divider, Dialog, Button, Portal } from 'react-native-paper';
+import { Text, TextInput, IconButton, Menu, Divider, Button } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { conversationApi, responseApi } from '../../utils/api';
 import MessageBubble from '../../components/conversation/MessageBubble';
 import ToneSelector from '../../components/conversation/ToneSelector';
+import CustomDialog from '../../components/CustomDialog';
 import { useTheme } from '../../utils/ThemeContext';
 
 const ConversationDetailScreen = ({ route, navigation }) => {
@@ -266,6 +267,14 @@ const ConversationDetailScreen = ({ route, navigation }) => {
         title: newTitle
       });
       
+      // Set params to pass back the updated title to the list screen
+      navigation.setParams({
+        updatedConversation: {
+          id: conversationId,
+          title: newTitle
+        }
+      });
+      
       setRenameDialogVisible(false);
     } catch (error) {
       console.error('Error renaming conversation:', error);
@@ -296,34 +305,41 @@ const ConversationDetailScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      <Portal>
-        <Dialog visible={renameDialogVisible} onDismiss={() => setRenameDialogVisible(false)}>
-          <Dialog.Title>Rename Conversation</Dialog.Title>
-          <Dialog.Content>
-            <TextInput
-              value={newTitle}
-              onChangeText={setNewTitle}
-              style={{ marginTop: 10 }}
-              mode="outlined"
-            />
-          </Dialog.Content>
-          <Dialog.Actions>
+      {/* Replace Dialog components with CustomDialog */}
+      <CustomDialog
+        visible={renameDialogVisible}
+        onDismiss={() => setRenameDialogVisible(false)}
+        title="Rename Conversation"
+        content={
+          <TextInput
+            value={newTitle}
+            onChangeText={setNewTitle}
+            style={{ marginTop: 10 }}
+            mode="outlined"
+          />
+        }
+        actions={
+          <>
             <Button onPress={() => setRenameDialogVisible(false)}>Cancel</Button>
             <Button onPress={handleRenameConversation}>Rename</Button>
-          </Dialog.Actions>
-        </Dialog>
-        
-        <Dialog visible={deleteDialogVisible} onDismiss={() => setDeleteDialogVisible(false)}>
-          <Dialog.Title>Delete Conversation</Dialog.Title>
-          <Dialog.Content>
-            <Text>Are you sure you want to delete this conversation? This action cannot be undone.</Text>
-          </Dialog.Content>
-          <Dialog.Actions>
+          </>
+        }
+      />
+      
+      <CustomDialog
+        visible={deleteDialogVisible}
+        onDismiss={() => setDeleteDialogVisible(false)}
+        title="Delete Conversation"
+        content={
+          <Text>Are you sure you want to delete this conversation? This action cannot be undone.</Text>
+        }
+        actions={
+          <>
             <Button onPress={() => setDeleteDialogVisible(false)}>Cancel</Button>
             <Button onPress={handleDeleteConversation} color={colors.error}>Delete</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+          </>
+        }
+      />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
