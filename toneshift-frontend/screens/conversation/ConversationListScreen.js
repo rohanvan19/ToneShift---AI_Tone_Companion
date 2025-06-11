@@ -277,34 +277,41 @@ const ConversationListScreen = ({ navigation }) => {
       : 'No messages yet';
 
     return (
-      <TouchableOpacity 
-        onPress={() => handleConversationPress(item)}
-        onLongPress={(event) => handleConversationLongPress(item, event)}
-        delayLongPress={500}
-      >
-        <Card style={styles.card}>
+      <Card style={styles.card}>
+        <TouchableOpacity 
+          onPress={() => handleConversationPress(item)}
+          style={{ flex: 1 }}
+        >
           <Card.Content>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <Text style={styles.conversationTitle}>{item.title}</Text>
-              <IconButton
-                icon="dots-vertical"
-                size={20}
-                onPress={(event) => {
-                  // Get the position of the touch event
-                  const { pageX, pageY } = event.nativeEvent;
-                  setMenuPosition({ x: pageX, y: pageY });
-                  setSelectedConversation(item);
-                  setMenuVisible(true);
-                }}
-              />
+              <View style={{ flexDirection: 'row' }}>
+                <IconButton
+                  icon="pencil"
+                  size={20}
+                  onPress={() => {
+                    setSelectedConversation(item);
+                    setNewTitle(item.title);
+                    setRenameDialogVisible(true);
+                  }}
+                />
+                <IconButton
+                  icon="delete"
+                  size={20}
+                  onPress={() => {
+                    setSelectedConversation(item);
+                    setDeleteDialogVisible(true);
+                  }}
+                />
+              </View>
             </View>
             <Text style={styles.lastMessage}>
               {lastMessage ? lastMessage.content.substring(0, 60) + (lastMessage.content.length > 60 ? '...' : '') : 'No messages yet'}
             </Text>
             <Text style={styles.timestamp}>{formattedDate}</Text>
           </Card.Content>
-        </Card>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </Card>
     );
   };
   

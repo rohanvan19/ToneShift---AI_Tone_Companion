@@ -9,7 +9,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { Text, TextInput, IconButton, Menu, Divider, Button } from 'react-native-paper';
+import { Text, TextInput, IconButton, Divider, Button } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { conversationApi, responseApi } from '../../utils/api';
@@ -95,8 +95,6 @@ const ConversationDetailScreen = ({ route, navigation }) => {
       flex: 1,
       maxHeight: 120,
       backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
       borderRadius: borderRadius.large,
       paddingHorizontal: spacing.m,
       paddingTop: spacing.s,
@@ -104,7 +102,6 @@ const ConversationDetailScreen = ({ route, navigation }) => {
       color: colors.text,
       ...fonts.regular,
       fontSize: fonts.sizes.medium,
-      ...shadows.small,
     },
     sendButton: {
       margin: 0,
@@ -130,7 +127,6 @@ const ConversationDetailScreen = ({ route, navigation }) => {
   const [selectedTone, setSelectedTone] = useState('Professional');
   const [isGenerating, setIsGenerating] = useState(false);
   const [showToneSelector, setShowToneSelector] = useState(false);
-  const [menuVisible, setMenuVisible] = useState(false);
   const [renameDialogVisible, setRenameDialogVisible] = useState(false);
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
   const [newTitle, setNewTitle] = useState('');
@@ -139,43 +135,7 @@ const ConversationDetailScreen = ({ route, navigation }) => {
   useEffect(() => {
     fetchConversation();
     fetchAvailableTones();
-    
-    // Set up navigation options
-    navigation.setOptions({
-      headerRight: () => (
-        <Menu
-          visible={menuVisible}
-          onDismiss={() => setMenuVisible(false)}
-          anchor={
-            <IconButton
-              icon="dots-vertical"
-              size={24}
-              onPress={() => setMenuVisible(true)}
-            />
-          }
-        >
-          <Menu.Item
-            onPress={() => {
-              setMenuVisible(false);
-              setNewTitle(conversation?.title || '');
-              setRenameDialogVisible(true);
-            }}
-            title="Rename Conversation"
-            leadingIcon="pencil"
-          />
-          <Divider />
-          <Menu.Item
-            onPress={() => {
-              setMenuVisible(false);
-              setDeleteDialogVisible(true);
-            }}
-            title="Delete Conversation"
-            leadingIcon="delete"
-          />
-        </Menu>
-      ),
-    });
-  }, [conversationId, menuVisible, conversation]);
+  }, [conversationId]);
 
   const fetchConversation = async () => {
     setLoading(true);
@@ -375,22 +335,31 @@ const ConversationDetailScreen = ({ route, navigation }) => {
               showsHorizontalScrollIndicator={false}
               style={styles.toneScrollView}
             >
-              {['Professional', 'Casual', 'Friendly', 'Funny', 'Formal', 'Empathetic', 'Direct', 'Enthusiastic'].map((tone) => (
+              {[
+                {name: 'Professional', emoji: '💼'},
+                {name: 'Casual', emoji: '☕'},
+                {name: 'Friendly', emoji: '😊'},
+                {name: 'Funny', emoji: '😂'},
+                {name: 'Formal', emoji: '🎩'},
+                {name: 'Empathetic', emoji: '❤️'},
+                {name: 'Direct', emoji: '🎯'},
+                {name: 'Enthusiastic', emoji: '✨'}
+              ].map((tone) => (
                 <TouchableOpacity
-                  key={tone}
+                  key={tone.name}
                   style={[
                     styles.toneChip,
-                    selectedTone === tone && styles.selectedToneChip
+                    selectedTone === tone.name && styles.selectedToneChip
                   ]}
-                  onPress={() => setSelectedTone(tone)}
+                  onPress={() => setSelectedTone(tone.name)}
                 >
                   <Text 
                     style={[
                       styles.toneChipText,
-                      selectedTone === tone && styles.selectedToneChipText
+                      selectedTone === tone.name && styles.selectedToneChipText
                     ]}
                   >
-                    {tone}
+                    {tone.emoji} {tone.name}
                   </Text>
                 </TouchableOpacity>
               ))}
@@ -405,6 +374,10 @@ const ConversationDetailScreen = ({ route, navigation }) => {
               multiline
               style={styles.input}
               disabled={isGenerating}
+              mode="outlined"     // Explicitly set the mode to outlined
+              outlineColor={colors.border}
+              activeOutlineColor={colors.primary}
+              underlineColor="transparent"  // Remove the underline completely
             />
             <IconButton
               icon="send"
