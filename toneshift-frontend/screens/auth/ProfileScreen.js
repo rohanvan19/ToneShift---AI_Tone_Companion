@@ -3,24 +3,25 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text, Button, TextInput, Avatar, Card, Divider, Switch } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../../utils/auth';
+import { useTheme } from '../../utils/ThemeContext';
 import { authApi } from '../../utils/api';
-import { colors, spacing, fonts, shadows, borderRadius } from '../../utils/theme';
 
 const ProfileScreen = () => {
   const { userData, updateUserData, signOut } = useContext(AuthContext);
+  const { theme, isDarkMode, toggleTheme } = useTheme();
+  const { colors, spacing, fonts, shadows, borderRadius } = theme;
+  
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [darkModeEnabled, setDarkModeEnabled] = useState(false);
 
   useEffect(() => {
     if (userData) {
       setUsername(userData.username || '');
       setEmail(userData.email || '');
       setNotificationsEnabled(userData.preferences?.notifications !== false);
-      setDarkModeEnabled(userData.preferences?.darkMode === true);
     }
   }, [userData]);
 
@@ -35,7 +36,7 @@ const ProfileScreen = () => {
         preferences: {
           ...userData.preferences,
           notifications: notificationsEnabled,
-          darkMode: darkModeEnabled
+          // We don't need to set darkMode here as it's handled by the ThemeContext
         }
       };
       
@@ -60,10 +61,84 @@ const ProfileScreen = () => {
       </View>
     );
   }
+  
+  // Styles have to be defined inside the component to use the theme
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    scrollContent: {
+      padding: spacing.m,
+    },
+    centered: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    header: {
+      alignItems: 'center',
+      marginVertical: spacing.l,
+    },
+    name: {
+      ...fonts.bold,
+      fontSize: fonts.sizes.xl,
+      marginTop: spacing.m,
+      color: colors.text,
+    },
+    card: {
+      marginBottom: spacing.m,
+      ...shadows.medium,
+      backgroundColor: colors.card,
+    },
+    input: {
+      marginBottom: spacing.m,
+      backgroundColor: colors.surface,
+    },
+    buttonRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginTop: spacing.s,
+    },
+    button: {
+      flex: 1,
+      marginHorizontal: spacing.xs,
+    },
+    editButton: {
+      marginTop: spacing.m,
+    },
+    infoRow: {
+      flexDirection: 'row',
+      marginBottom: spacing.s,
+    },
+    label: {
+      ...fonts.medium,
+      color: colors.textSecondary,
+      width: 100,
+    },
+    value: {
+      flex: 1,
+      color: colors.text,
+    },
+    preferenceRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: spacing.s,
+    },
+    divider: {
+      marginVertical: spacing.xs,
+      backgroundColor: colors.border,
+    },
+    logoutButton: {
+      marginTop: spacing.l,
+    },
+  });
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Profile header */}
         <View style={styles.header}>
           <Avatar.Text 
             size={80} 
@@ -73,8 +148,9 @@ const ProfileScreen = () => {
           <Text style={styles.name}>{userData.username}</Text>
         </View>
 
+        {/* Profile information card */}
         <Card style={styles.card}>
-          <Card.Title title="Profile Information" />
+          <Card.Title title="Profile Information" titleStyle={{ color: colors.text }} />
           <Card.Content>
             {isEditing ? (
               <>
@@ -132,11 +208,12 @@ const ProfileScreen = () => {
           </Card.Content>
         </Card>
 
+        {/* Preferences card */}
         <Card style={styles.card}>
-          <Card.Title title="Preferences" />
+          <Card.Title title="Preferences" titleStyle={{ color: colors.text }} />
           <Card.Content>
             <View style={styles.preferenceRow}>
-              <Text>Notifications</Text>
+              <Text style={{ color: colors.text }}>Notifications</Text>
               <Switch
                 value={notificationsEnabled}
                 onValueChange={setNotificationsEnabled}
@@ -145,16 +222,17 @@ const ProfileScreen = () => {
             </View>
             <Divider style={styles.divider} />
             <View style={styles.preferenceRow}>
-              <Text>Dark Mode</Text>
+              <Text style={{ color: colors.text }}>Dark Mode</Text>
               <Switch
-                value={darkModeEnabled}
-                onValueChange={setDarkModeEnabled}
+                value={isDarkMode}
+                onValueChange={toggleTheme}
                 color={colors.primary}
               />
             </View>
           </Card.Content>
         </Card>
 
+        {/* Sign out button */}
         <Button 
           mode="outlined" 
           onPress={signOut}
@@ -167,78 +245,5 @@ const ProfileScreen = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  scrollContent: {
-    padding: spacing.m,
-  },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  header: {
-    alignItems: 'center',
-    marginVertical: spacing.l,
-  },
-  name: {
-    ...fonts.bold,
-    fontSize: fonts.sizes.xl,
-    marginTop: spacing.m,
-    color: colors.text,
-  },
-  card: {
-    marginBottom: spacing.m,
-    ...shadows.medium,
-  },
-  input: {
-    marginBottom: spacing.m,
-    backgroundColor: colors.surface,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: spacing.s,
-  },
-  button: {
-    flex: 1,
-    marginHorizontal: spacing.xs,
-  },
-  editButton: {
-    marginTop: spacing.m,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    marginBottom: spacing.s,
-  },
-  label: {
-    ...fonts.medium,
-    color: colors.textSecondary,
-    width: 100,
-  },
-  value: {
-    flex: 1,
-    color: colors.text,
-  },
-  preferenceRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: spacing.s,
-  },
-  divider: {
-    marginVertical: spacing.xs,
-  },
-  logoutButton: {
-    marginTop: spacing.l,
-    marginBottom: spacing.xxl,
-    borderColor: colors.error,
-    borderWidth: 1,
-  },
-});
 
 export default ProfileScreen;

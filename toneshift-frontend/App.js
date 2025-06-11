@@ -1,12 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Provider as PaperProvider } from 'react-native-paper';
+import { Provider as PaperProvider, MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
 import Navigation from './navigation';
 import { AuthContext } from './utils/auth';
-import { colors } from './utils/theme';
+import { ThemeProvider } from './utils/ThemeContext';
+import { useTheme } from './utils/ThemeContext';
+
+// Create a themed component that will use the ThemeContext
+const ThemedApp = () => {
+  const { theme, isDarkMode } = useTheme();
+  
+  // Configure Paper theme based on our theme
+  const paperTheme = isDarkMode ? {
+    ...MD3DarkTheme,
+    colors: {
+      ...MD3DarkTheme.colors,
+      primary: theme.colors.primary,
+      onPrimary: '#FFFFFF',
+      secondary: theme.colors.secondary,
+      background: theme.colors.background,
+      surface: theme.colors.surface,
+      error: theme.colors.error,
+      onBackground: theme.colors.text,
+      onSurface: theme.colors.text,
+      disabled: theme.colors.textSecondary,
+      placeholder: theme.colors.textSecondary,
+      backdrop: 'rgba(0, 0, 0, 0.5)',
+    }
+  } : {
+    ...MD3LightTheme,
+    colors: {
+      ...MD3LightTheme.colors,
+      primary: theme.colors.primary,
+      onPrimary: '#FFFFFF',
+      secondary: theme.colors.secondary,
+      background: theme.colors.background,
+      surface: theme.colors.surface,
+      error: theme.colors.error,
+      onBackground: theme.colors.text,
+      onSurface: theme.colors.text,
+      disabled: theme.colors.textSecondary,
+      placeholder: theme.colors.textSecondary,
+      backdrop: 'rgba(0, 0, 0, 0.4)',
+    }
+  };
+  
+  return (
+    <PaperProvider theme={paperTheme}>
+      <SafeAreaProvider>
+        <StatusBar style={isDarkMode ? 'light' : 'dark'} />
+        <Navigation />
+      </SafeAreaProvider>
+    </PaperProvider>
+  );
+};
 
 export default function App() {
   const [state, setState] = useState({
@@ -78,32 +128,15 @@ export default function App() {
     },
   };
 
-  const theme = {
-    colors: {
-      primary: colors.primary,
-      accent: colors.secondary,
-      background: colors.background,
-      surface: colors.surface,
-      error: colors.error,
-      text: colors.text,
-      disabled: colors.textSecondary,
-      placeholder: colors.textSecondary,
-      backdrop: 'rgba(0, 0, 0, 0.5)',
-    },
-  };
-
   if (!state.fontsLoaded) {
     return null; // You can also return a loading indicator here
   }
 
   return (
     <AuthContext.Provider value={{ ...authContext, ...state }}>
-      <PaperProvider theme={theme}>
-        <SafeAreaProvider>
-          <StatusBar style="auto" />
-          <Navigation />
-        </SafeAreaProvider>
-      </PaperProvider>
+      <ThemeProvider>
+        <ThemedApp />
+      </ThemeProvider>
     </AuthContext.Provider>
   );
 }

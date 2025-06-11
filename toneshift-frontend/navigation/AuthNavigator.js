@@ -2,11 +2,14 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
-import { colors } from '../utils/theme';
+import { useTheme } from '../utils/ThemeContext';
 
 const Stack = createNativeStackNavigator();
 
 const AuthNavigator = () => {
+  const { theme } = useTheme();
+  const { colors } = theme;
+  
   return (
     <Stack.Navigator
       screenOptions={{

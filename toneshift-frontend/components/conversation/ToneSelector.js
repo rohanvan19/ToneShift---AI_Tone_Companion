@@ -2,9 +2,12 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Text, Card, Chip } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { colors, spacing, fonts, shadows, borderRadius } from '../../utils/theme';
+import { useTheme } from '../../utils/ThemeContext';
 
 const ToneSelector = ({ selectedTone, onSelectTone, onClose }) => {
+  const { theme } = useTheme();
+  const { colors, spacing, fonts, shadows, borderRadius } = theme;
+  
   // Sample tones (in a real app, these would come from the API)
   const tones = [
     { name: 'Professional', icon: 'briefcase-outline' },
@@ -17,10 +20,46 @@ const ToneSelector = ({ selectedTone, onSelectTone, onClose }) => {
     { name: 'Enthusiastic', icon: 'star-outline' },
   ];
 
+  const styles = StyleSheet.create({
+    container: {
+      marginBottom: spacing.m,
+      ...shadows.medium,
+      borderRadius: borderRadius.medium,
+      backgroundColor: colors.card,
+    },
+    toneRow: {
+      flexDirection: 'row',
+      flexWrap: 'nowrap',
+      marginBottom: spacing.s,
+      paddingVertical: spacing.xs,
+    },
+    toneChip: {
+      marginRight: spacing.s,
+      marginBottom: spacing.s,
+      backgroundColor: colors.surface,
+    },
+    selectedToneChip: {
+      backgroundColor: colors.primary,
+    },
+    toneText: {
+      ...fonts.medium,
+      color: colors.text,
+    },
+    selectedToneText: {
+      color: '#fff',
+    },
+    helpText: {
+      color: colors.textSecondary,
+      fontSize: fonts.sizes.small,
+      marginTop: spacing.xs,
+    },
+  });
+
   return (
     <Card style={styles.container}>
       <Card.Title 
         title="Select a Tone" 
+        titleStyle={{ color: colors.text }}
         right={(props) => (
           <TouchableOpacity onPress={onClose}>
             <Icon name="close" size={24} color={colors.textSecondary} />
@@ -59,38 +98,5 @@ const ToneSelector = ({ selectedTone, onSelectTone, onClose }) => {
     </Card>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: spacing.m,
-    ...shadows.medium,
-    borderRadius: borderRadius.medium,
-  },
-  toneRow: {
-    flexDirection: 'row',
-    flexWrap: 'nowrap',
-    marginBottom: spacing.s,
-    paddingVertical: spacing.xs,
-  },
-  toneChip: {
-    marginRight: spacing.s,
-    marginBottom: spacing.s,
-  },
-  selectedToneChip: {
-    backgroundColor: colors.primary,
-  },
-  toneText: {
-    ...fonts.medium,
-  },
-  selectedToneText: {
-    color: '#fff',
-  },
-  helpText: {
-    color: colors.textSecondary,
-    fontSize: fonts.sizes.small,
-    marginTop: spacing.s,
-    textAlign: 'center',
-  },
-});
 
 export default ToneSelector;

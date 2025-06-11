@@ -1,15 +1,80 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, Card } from 'react-native-paper';
-import { colors, spacing, fonts, shadows, borderRadius } from '../../utils/theme';
+import { useTheme } from '../../utils/ThemeContext';
 
 const MessageBubble = ({ message }) => {
+  const { theme } = useTheme();
+  const { colors, spacing, fonts, shadows, borderRadius } = theme;
+  
   const isUser = message.sender === 'user';
   
   // Format timestamp
   const formattedTime = new Date(message.timestamp).toLocaleTimeString([], { 
     hour: '2-digit', 
     minute: '2-digit' 
+  });
+
+  const styles = StyleSheet.create({
+    container: {
+      marginBottom: spacing.m,
+      maxWidth: '85%',
+    },
+    userContainer: {
+      alignSelf: 'flex-end',
+    },
+    aiContainer: {
+      alignSelf: 'flex-start',
+    },
+    bubble: {
+      borderRadius: borderRadius.large,
+      ...shadows.small,
+    },
+    contentPadding: {
+      padding: spacing.s,
+    },
+    userBubble: {
+      backgroundColor: colors.primary,
+    },
+    aiBubble: {
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    messageText: {
+      ...fonts.regular,
+      fontSize: fonts.sizes.medium,
+      lineHeight: 22,
+    },
+    userText: {
+      color: '#fff',
+    },
+    aiText: {
+      color: colors.text,
+    },
+    timeContainer: {
+      flexDirection: 'row',
+      marginTop: spacing.xs,
+      alignItems: 'center',
+    },
+    userTimeContainer: {
+      justifyContent: 'flex-end',
+    },
+    aiTimeContainer: {
+      justifyContent: 'flex-start',
+    },
+    timeText: {
+      fontSize: fonts.sizes.xs,
+      color: colors.textSecondary,
+      ...fonts.regular,
+    },
+    toneText: {
+      fontSize: fonts.sizes.xs,
+      color: colors.secondary,
+      marginRight: spacing.s,
+      fontStyle: 'italic',
+      ...fonts.medium,
+    },
   });
 
   return (
@@ -35,67 +100,5 @@ const MessageBubble = ({ message }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: spacing.m,
-    maxWidth: '85%',
-  },
-  userContainer: {
-    alignSelf: 'flex-end',
-  },
-  aiContainer: {
-    alignSelf: 'flex-start',
-  },
-  bubble: {
-    borderRadius: borderRadius.large,
-    ...shadows.small,
-  },
-  contentPadding: {
-    padding: spacing.s,
-  },
-  userBubble: {
-    backgroundColor: colors.primary,
-  },
-  aiBubble: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  messageText: {
-    ...fonts.regular,
-    fontSize: fonts.sizes.medium,
-    lineHeight: 22,
-  },
-  userText: {
-    color: '#fff',
-  },
-  aiText: {
-    color: colors.text,
-  },
-  timeContainer: {
-    flexDirection: 'row',
-    marginTop: spacing.xs,
-    alignItems: 'center',
-  },
-  userTimeContainer: {
-    justifyContent: 'flex-end',
-  },
-  aiTimeContainer: {
-    justifyContent: 'flex-start',
-  },
-  timeText: {
-    fontSize: fonts.sizes.xs,
-    color: colors.textSecondary,
-    ...fonts.regular,
-  },
-  toneText: {
-    fontSize: fonts.sizes.xs,
-    color: colors.secondary,
-    marginRight: spacing.s,
-    fontStyle: 'italic',
-    ...fonts.medium,
-  },
-});
 
 export default MessageBubble;

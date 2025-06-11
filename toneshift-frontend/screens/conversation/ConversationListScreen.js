@@ -3,10 +3,95 @@ import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { Text, Card, FAB, ActivityIndicator, TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { conversationApi } from '../../utils/api';
-import { colors, spacing, fonts, shadows, borderRadius } from '../../utils/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTheme } from '../../utils/ThemeContext';
 
 const ConversationListScreen = ({ navigation }) => {
+  const { theme } = useTheme();
+  const { colors, spacing, fonts, shadows, borderRadius } = theme;
+  
+  // Move the styles definition here, before they're used in any conditionals
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    centered: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: spacing.l,
+    },
+    searchContainer: {
+      margin: spacing.m,
+    },
+    searchBar: {
+      backgroundColor: colors.surface,
+      ...shadows.small,
+    },
+    listContent: {
+      padding: spacing.m,
+      paddingBottom: spacing.xxl, // Extra padding for FAB
+    },
+    card: {
+      marginBottom: spacing.m,
+      backgroundColor: colors.card,
+      ...shadows.small,
+    },
+    conversationTitle: {
+      ...fonts.medium,
+      fontSize: fonts.sizes.large,
+      marginBottom: spacing.xs,
+      color: colors.text,
+    },
+    lastMessage: {
+      color: colors.textSecondary,
+      marginBottom: spacing.xs,
+    },
+    timestamp: {
+      color: colors.textSecondary,
+      fontSize: fonts.sizes.xs,
+      alignSelf: 'flex-end',
+    },
+    errorText: {
+      color: colors.error,
+      textAlign: 'center',
+      marginBottom: spacing.m,
+    },
+    retryButton: {
+      padding: spacing.m,
+      backgroundColor: colors.primary,
+      borderRadius: borderRadius.medium,
+    },
+    retryText: {
+      color: '#fff',
+      ...fonts.medium,
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: spacing.l,
+    },
+    emptyText: {
+      ...fonts.medium,
+      fontSize: fonts.sizes.large,
+      marginBottom: spacing.s,
+      color: colors.text,
+    },
+    emptySubtext: {
+      color: colors.textSecondary,
+      textAlign: 'center',
+    },
+    fab: {
+      position: 'absolute',
+      margin: spacing.m,
+      right: 0,
+      bottom: 0,
+      backgroundColor: colors.primary,
+    },
+  });
+  
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -176,83 +261,5 @@ const ConversationListScreen = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: spacing.l,
-  },
-  searchContainer: {
-    margin: spacing.m,
-  },
-  searchBar: {
-    backgroundColor: colors.surface,
-    ...shadows.small,
-  },
-  listContent: {
-    padding: spacing.m,
-    paddingBottom: spacing.xxl, // Extra padding for FAB
-  },
-  card: {
-    marginBottom: spacing.m,
-    ...shadows.small,
-  },
-  conversationTitle: {
-    ...fonts.medium,
-    fontSize: fonts.sizes.large,
-    marginBottom: spacing.xs,
-  },
-  lastMessage: {
-    color: colors.textSecondary,
-    marginBottom: spacing.xs,
-  },
-  timestamp: {
-    color: colors.textSecondary,
-    fontSize: fonts.sizes.xs,
-    alignSelf: 'flex-end',
-  },
-  errorText: {
-    color: colors.error,
-    textAlign: 'center',
-    marginBottom: spacing.m,
-  },
-  retryButton: {
-    padding: spacing.m,
-    backgroundColor: colors.primary,
-    borderRadius: borderRadius.medium,
-  },
-  retryText: {
-    color: '#fff',
-    ...fonts.medium,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: spacing.l,
-  },
-  emptyText: {
-    ...fonts.medium,
-    fontSize: fonts.sizes.large,
-    marginBottom: spacing.s,
-  },
-  emptySubtext: {
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
-  fab: {
-    position: 'absolute',
-    margin: spacing.m,
-    right: 0,
-    bottom: 0,
-    backgroundColor: colors.primary,
-  },
-});
 
 export default ConversationListScreen;

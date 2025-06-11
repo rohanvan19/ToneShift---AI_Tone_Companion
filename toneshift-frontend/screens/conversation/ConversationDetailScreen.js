@@ -14,18 +14,107 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { conversationApi, responseApi } from '../../utils/api';
 import MessageBubble from '../../components/conversation/MessageBubble';
 import ToneSelector from '../../components/conversation/ToneSelector';
-import { colors, spacing, fonts, shadows, borderRadius } from '../../utils/theme';
+import { useTheme } from '../../utils/ThemeContext';
 
 const ConversationDetailScreen = ({ route, navigation }) => {
+  const { theme } = useTheme();
+  const { colors, spacing, fonts, shadows, borderRadius } = theme;
+  
+  // Define styles at the top of the component
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    keyboardAvoid: {
+      flex: 1,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.background,
+    },
+    messageList: {
+      padding: spacing.m,
+      paddingBottom: spacing.xl,
+    },
+    inputContainer: {
+      backgroundColor: colors.surface,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+      padding: spacing.m,
+      ...shadows.small,
+    },
+    toneContainer: {
+      marginBottom: spacing.m,
+    },
+    toneLabel: {
+      ...fonts.medium,
+      color: colors.textSecondary,
+      marginBottom: spacing.xs,
+    },
+    toneScrollView: {
+      flexDirection: 'row',
+    },
+    toneChip: {
+      paddingHorizontal: spacing.m,
+      paddingVertical: spacing.s,
+      borderRadius: borderRadius.round,
+      marginRight: spacing.s,
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      elevation: 1,
+      marginBottom: spacing.xs,
+    },
+    selectedToneChip: {
+      backgroundColor: colors.primary,
+      borderColor: colors.primary,
+      elevation: 3,
+    },
+    toneChipText: {
+      ...fonts.semiBold,
+      color: colors.textSecondary,
+    },
+    selectedToneChipText: {
+      color: '#fff',
+    },
+    inputRow: {
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+    },
+    input: {
+      flex: 1,
+      maxHeight: 100,
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: borderRadius.large,
+      paddingHorizontal: spacing.m,
+      paddingTop: spacing.s,
+      paddingBottom: spacing.s,
+      color: colors.text,
+    },
+    sendButton: {
+      margin: 0,
+      marginLeft: spacing.s,
+      backgroundColor: colors.primaryLight,
+      borderRadius: borderRadius.round,
+    },
+  });
+  
   const { conversationId } = route.params;
+  
+  // State variables
   const [conversation, setConversation] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [menuVisible, setMenuVisible] = useState(false);
   const [selectedTone, setSelectedTone] = useState('Professional');
-  const [showToneSelector, setShowToneSelector] = useState(false);
-  const [availableTones, setAvailableTones] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showToneSelector, setShowToneSelector] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
   const flatListRef = useRef(null);
 
   useEffect(() => {
@@ -231,86 +320,5 @@ const ConversationDetailScreen = ({ route, navigation }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  keyboardAvoid: {
-    flex: 1,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  messageList: {
-    padding: spacing.m,
-    paddingBottom: spacing.xl,
-  },
-  inputContainer: {
-    backgroundColor: colors.surface,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    padding: spacing.m,
-    ...shadows.small,
-  },
-  toneContainer: {
-    marginBottom: spacing.m,
-  },
-  toneLabel: {
-    ...fonts.medium,
-    color: colors.textSecondary,
-    marginBottom: spacing.xs,
-  },
-  toneScrollView: {
-    flexDirection: 'row',
-  },
-  toneChip: {
-    paddingHorizontal: spacing.m,
-    paddingVertical: spacing.s,
-    borderRadius: borderRadius.round,
-    marginRight: spacing.s,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    elevation: 1,
-    marginBottom: spacing.xs,
-  },
-  selectedToneChip: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-    elevation: 3,
-  },
-  toneChipText: {
-    ...fonts.semiBold,
-    color: colors.textSecondary,
-  },
-  selectedToneChipText: {
-    color: '#fff',
-  },
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-  },
-  input: {
-    flex: 1,
-    maxHeight: 100,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: borderRadius.large,
-    paddingHorizontal: spacing.m,
-    paddingTop: spacing.s,
-    paddingBottom: spacing.s,
-  },
-  sendButton: {
-    margin: 0,
-    marginLeft: spacing.s,
-    backgroundColor: colors.primaryLight,
-    borderRadius: borderRadius.round,
-  },
-});
 
 export default ConversationDetailScreen;

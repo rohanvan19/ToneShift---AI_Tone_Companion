@@ -2,7 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { colors } from '../utils/theme';
+import { useTheme } from '../utils/ThemeContext';
 
 // Import placeholder screens
 import ConversationListScreen from '../screens/conversation/ConversationListScreen';
@@ -14,6 +14,9 @@ const ConversationStack = createNativeStackNavigator();
 
 // Create the conversation stack
 const ConversationNavigator = () => {
+  const { theme } = useTheme();
+  const { colors } = theme;
+  
   return (
     <ConversationStack.Navigator
       screenOptions={{
@@ -39,6 +42,9 @@ const ConversationNavigator = () => {
 
 // Main tab navigator
 const AppNavigator = () => {
+  const { theme } = useTheme();
+  const { colors } = theme;
+  
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -55,6 +61,7 @@ const AppNavigator = () => {
         },
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textSecondary,
+        tabBarStyle: { backgroundColor: colors.card, borderTopColor: colors.border },
         headerStyle: {
           backgroundColor: colors.primary,
         },
