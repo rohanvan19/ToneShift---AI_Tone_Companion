@@ -1,9 +1,8 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Base URL for API requests
-
-const API_URL = 'http://localhost:5000/api';
+// Base URL for API requests - use environment variable if available
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 // Create axios instance
 const api = axios.create({
@@ -19,6 +18,8 @@ api.interceptors.request.use(
     const token = await AsyncStorage.getItem('token');
     console.log('API Request to:', config.url);
     console.log('Token available:', token ? 'YES' : 'NO');
+    console.log('API URL:', API_URL);
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
       console.log('Authorization header set');

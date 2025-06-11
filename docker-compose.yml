@@ -1,80 +1,78 @@
+version: '3.8'
+
 services:
-  # Backend API service
-  backend:
-    build: 
-      context: ./toneshift-backend
-    ports:
-      - "5000:5000"
-    depends_on:
-      - postgres
-    environment:
-      - PORT=5000
-      - NODE_ENV=development
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=toneshift
-      - DB_USER=postgres
-      - DB_PASSWORD=qwedsa
-      - JWT_SECRET=your_jwt_secret_key_change_this_in_production
-      - JWT_EXPIRES_IN=7d
-      - OLLAMA_API_URL=http://localhost:11434/api
-      - OLLAMA_MODEL=gemma3:4b
-    volumes:
-      - ./toneshift-backend:/app
-      - /app/node_modules
-    restart: unless-stopped
-    networks:
-      - toneshift_net
-
-  # Frontend service
-  frontend:
-    build:
-      context: ./toneshift-frontend
-    ports:
-      - "19006:19006"  # Expose web port
-    environment:
-      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
-      - REACT_NATIVE_PACKAGER_HOSTNAME=localhost
-    volumes:
-      - ./toneshift-frontend:/app
-    depends_on:
-      - backend
-    command: ["npm", "run", "web"]
-    restart: unless-stopped
-    networks:
-      - toneshift_net
-
   # PostgreSQL database
-  postgres:
+  toneshift-postgres:
     image: postgres:15
+    container_name: toneshift-postgres
+    restart: always
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=qwedsa
+      - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=toneshift
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
+      - postgres-data:/var/lib/postgresql/data
     networks:
-      - toneshift_net
+      - toneshift-network
 
-  # Ollama service for AI model inference
+  # Backend API service
+  toneshift-backend:
+    build: ./toneshift-backend
+    container_name: toneshift-backend
+    restart: always
+    depends_on:
+      - toneshift-postgres
+      - ollama
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - DB_HOST=toneshift-postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=toneshift
+      - JWT_SECRET=toneshift_secret_key
+      - OLLAMA_API_URL=http://ollama:11434/api
+      - OLLAMA_MODEL=gemma3:4b
+    networks:
+      - toneshift-network
+
+  # Frontend service
+  toneshift-frontend:
+    build: ./toneshift-frontend
+    container_name: toneshift-frontend
+    restart: always
+    depends_on:
+      - toneshift-backend
+    ports:
+      - "19006:19006"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api  # For browser access
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+      - REACT_NATIVE_PACKAGER_HOSTNAME=0.0.0.0
+    networks:
+      - toneshift-network
+      
+  # Ollama service for AI model serving
   ollama:
     image: ollama/ollama:latest
+    container_name: ollama
+    restart: always
     ports:
       - "11434:11434"
     volumes:
-      - ollama_data:/root/.ollama
-    restart: unless-stopped
+      - ollama-data:/root/.ollama
     networks:
-      - toneshift_net
+      - toneshift-network
+
+networks:
+  toneshift-network:
+    driver: bridge
 
 volumes:
-  postgres_data:
-  ollama_data:
-
-# Fixed network configuration
-networks:
-  toneshift_net:
-    driver: bridge
+  postgres-data:
+  ollama-data:

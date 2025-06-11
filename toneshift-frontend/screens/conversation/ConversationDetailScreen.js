@@ -12,7 +12,7 @@ import {
 import { Text, TextInput, IconButton, Divider, Button } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { conversationApi, responseApi } from '../../utils/api';
+import { conversationApi, responseApi, toneApi } from '../../utils/api';
 import MessageBubble from '../../components/conversation/MessageBubble';
 import ToneSelector from '../../components/conversation/ToneSelector';
 import CustomDialog from '../../components/CustomDialog';
@@ -130,6 +130,7 @@ const ConversationDetailScreen = ({ route, navigation }) => {
   const [renameDialogVisible, setRenameDialogVisible] = useState(false);
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
   const [newTitle, setNewTitle] = useState('');
+  const [availableTones, setAvailableTones] = useState([]); // Add this line
   const flatListRef = useRef(null);
 
   useEffect(() => {
@@ -151,10 +152,9 @@ const ConversationDetailScreen = ({ route, navigation }) => {
 
   const fetchAvailableTones = async () => {
     try {
-      // This would fetch tones from the API
-      const response = await fetch('/api/tones');
-      const data = await response.json();
-      setAvailableTones(data.tones || []);
+      // Use toneApi instead of direct fetch
+      const response = await toneApi.getAll();
+      setAvailableTones(response.data.tones || []);
     } catch (error) {
       console.error('Error fetching tones:', error);
       // Fallback to default tones
@@ -162,8 +162,11 @@ const ConversationDetailScreen = ({ route, navigation }) => {
         { name: 'Professional' },
         { name: 'Casual' },
         { name: 'Friendly' },
-        { name: 'Direct' },
+        { name: 'Funny' },
+        { name: 'Formal' },
         { name: 'Empathetic' },
+        { name: 'Direct' },
+        { name: 'Enthusiastic' }
       ]);
     }
   };

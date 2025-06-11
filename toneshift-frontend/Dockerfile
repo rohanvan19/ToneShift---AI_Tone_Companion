@@ -2,32 +2,28 @@ FROM node:20-slim
 
 WORKDIR /app
 
-# Install Expo CLI globally
-RUN npm install -g expo-cli
-
-# Install dependencies first
+# Install dependencies first (better layer caching)
 COPY package*.json ./
 RUN npm install
 
-# Explicitly install web dependencies
-RUN npx expo install react-native-web react-dom @expo/webpack-config
+# Install web dependencies
+RUN npm install react-native-web react-dom @expo/webpack-config
 
 # Copy application code
 COPY . .
 
 # Create assets directory if it doesn't exist
-RUN mkdir -p /app/assets
-
-# Create a simple favicon if it doesn't exist
-RUN test -f /app/assets/favicon.png || \
-    echo "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDowMTgwMTE3NDA3MjA2ODExOEY2MkQyNTFFNDI0N0U3NSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo5NzVEOTA1QzQ3MjMxMUUyQjU3OEY5MDVFQzA5MjhCRSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo5NzVEOTA1QjQ3MjMxMUUyQjU3OEY5MDVFQzA5MjhCRSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjAxODAxMTc0MDcyMDY4MTE4RjYyRDI1MUU0MjQ3RTc1IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjAxODAxMTc0MDcyMDY4MTE4RjYyRDI1MUU0MjQ3RTc1Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+LoiHuAAAAI5JREFUeNpi/P//PwMlgImBQsACY/z4+64eMb6GZEKtj9L+exnFW4A0N7I2JKMYBXgZxZrhhoXaHIHblmITz5QHMi4hRxOyJhjNBGUwMkkA8TcaaMYG4gJkTcg0A14/mEGw4An+ywkG1nKchkEE8LrxHa1iAQTegYVZNTEhjGyoM5CDkRmXATAAz3KGHiB+XxMAAgwAwSsnTiQoPOUAAAAASUVORK5CYII=" | base64 -d > /app/assets/favicon.png
+RUN mkdir -p /app/assets/fonts
 
 # Expose the port the app runs on
 EXPOSE 19006
 
 # Configure Expo to work in Docker environment
 ENV EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
-ENV REACT_NATIVE_PACKAGER_HOSTNAME=localhost
+# This is crucial - set to 0.0.0.0 to make the dev server accessible outside the container
+ENV REACT_NATIVE_PACKAGER_HOSTNAME=0.0.0.0
+# Set the API URL environment variable
+ENV REACT_APP_API_URL=http://toneshift-backend:5000/api
 
-# Start the Expo server
+# Start with npm run web as it works for your project
 CMD ["npm", "run", "web"]
