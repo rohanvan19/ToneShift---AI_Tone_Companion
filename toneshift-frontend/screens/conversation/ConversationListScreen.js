@@ -61,10 +61,33 @@ const ConversationListScreen = ({ navigation }) => {
     });
   };
 
-  const handleCreateConversation = () => {
-    // This would navigate to a create conversation screen
-    // For now we'll just create a default one
-    alert('Create new conversation functionality would go here');
+  const handleCreateConversation = async () => {
+    try {
+      // Create a new conversation with a default title
+      // You could add a modal here to let the user enter a title
+      const title = "New Conversation";
+      const response = await conversationApi.create({
+        title,
+        context: '', // Optional context
+      });
+      
+      console.log('Conversation created:', response.data);
+      
+      // Refresh the conversation list
+      await fetchConversations();
+      
+      // Navigate to the new conversation
+      if (response.data && response.data.conversation) {
+        navigation.navigate('ConversationDetail', {
+          conversationId: response.data.conversation.id,
+          title: response.data.conversation.title
+        });
+      }
+    } catch (error) {
+      console.error('Error creating conversation:', error);
+      // Show error to user
+      alert('Failed to create a new conversation. Please try again.');
+    }
   };
 
   const renderConversationItem = ({ item }) => {
