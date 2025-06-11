@@ -69,7 +69,7 @@ const ProfileScreen = () => {
       backgroundColor: colors.background,
     },
     scrollContent: {
-      padding: spacing.m,
+      padding: spacing.l,
     },
     centered: {
       flex: 1,
@@ -78,22 +78,29 @@ const ProfileScreen = () => {
     },
     header: {
       alignItems: 'center',
-      marginVertical: spacing.l,
+      marginVertical: spacing.xl,
     },
     name: {
       ...fonts.bold,
       fontSize: fonts.sizes.xl,
       marginTop: spacing.m,
       color: colors.text,
+      letterSpacing: 0.5,
     },
     card: {
-      marginBottom: spacing.m,
+      marginBottom: spacing.l,
       ...shadows.medium,
       backgroundColor: colors.card,
+      borderRadius: borderRadius.xl,
+      overflow: 'hidden',
+      borderWidth: 1,
+      borderColor: colors.border,
     },
     input: {
       marginBottom: spacing.m,
-      backgroundColor: colors.surface,
+      backgroundColor: colors.background,
+      borderRadius: borderRadius.large,
+      height: 56,
     },
     buttonRow: {
       flexDirection: 'row',
@@ -124,14 +131,20 @@ const ProfileScreen = () => {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingVertical: spacing.s,
+      paddingVertical: spacing.m,
     },
     divider: {
-      marginVertical: spacing.xs,
+      marginVertical: spacing.s,
       backgroundColor: colors.border,
+      height: 1,
     },
     logoutButton: {
-      marginTop: spacing.l,
+      marginTop: spacing.xl,
+      borderRadius: borderRadius.large,
+      height: 56,
+      justifyContent: 'center',
+      borderColor: colors.error,
+      borderWidth: 1,
     },
   });
 

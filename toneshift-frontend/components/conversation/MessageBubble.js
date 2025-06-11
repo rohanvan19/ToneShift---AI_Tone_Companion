@@ -22,16 +22,21 @@ const MessageBubble = ({ message }) => {
     },
     userContainer: {
       alignSelf: 'flex-end',
+      marginRight: spacing.s,
     },
     aiContainer: {
       alignSelf: 'flex-start',
+      marginLeft: spacing.s,
     },
     bubble: {
       borderRadius: borderRadius.large,
-      ...shadows.small,
+      ...shadows.medium,
+      overflow: 'hidden',
     },
     contentPadding: {
-      padding: spacing.s,
+      padding: spacing.m,
+      paddingTop: spacing.s,
+      paddingBottom: spacing.s,
     },
     userBubble: {
       backgroundColor: colors.primary,
@@ -44,7 +49,7 @@ const MessageBubble = ({ message }) => {
     messageText: {
       ...fonts.regular,
       fontSize: fonts.sizes.medium,
-      lineHeight: 22,
+      lineHeight: 24,
     },
     userText: {
       color: '#fff',
@@ -56,6 +61,7 @@ const MessageBubble = ({ message }) => {
       flexDirection: 'row',
       marginTop: spacing.xs,
       alignItems: 'center',
+      paddingHorizontal: spacing.xs,
     },
     userTimeContainer: {
       justifyContent: 'flex-end',
@@ -70,7 +76,7 @@ const MessageBubble = ({ message }) => {
     },
     toneText: {
       fontSize: fonts.sizes.xs,
-      color: colors.secondary,
+      color: isUser ? colors.primaryLight : colors.secondary,
       marginRight: spacing.s,
       fontStyle: 'italic',
       ...fonts.medium,

@@ -29,7 +29,7 @@ const fonts = {
   },
 };
 
-// Modern spacing
+// Modern spacing with more breathing room
 const spacing = {
   xs: 4,
   s: 8,
@@ -37,82 +37,83 @@ const spacing = {
   l: 24,
   xl: 32,
   xxl: 48,
+  xxxl: 64,
 };
 
-// Border radiuses
+// Enhanced border radiuses for more modern look
 const borderRadius = {
-  small: 6,
-  medium: 10,
-  large: 16,
-  xl: 24,
+  small: 8,
+  medium: 12,
+  large: 20,
+  xl: 28,
   round: 999,
 };
 
-// Light theme colors
+// Light theme colors with better contrast and vibrancy
 const lightColors = {
-  primary: '#5E60CE',
-  primaryLight: '#7E7FEF',
-  primaryDark: '#4A4AB7',
-  secondary: '#64DFDF',
-  secondaryLight: '#80FFFF',
-  secondaryDark: '#48B9B9',
-  background: '#F8F9FA',
+  primary: '#6366F1',       // Indigo for a more modern look
+  primaryLight: '#818CF8',
+  primaryDark: '#4F46E5',
+  secondary: '#06B6D4',     // Cyan
+  secondaryLight: '#22D3EE',
+  secondaryDark: '#0891B2',
+  background: '#F8FAFC',
   surface: '#FFFFFF',
-  error: '#FF5A5A',
-  text: '#212529',
-  textSecondary: '#6C757D',
-  border: '#E9ECEF',
-  success: '#52B788',
-  warning: '#FFD166',
-  accent: '#FF9F1C',
+  error: '#EF4444',
+  text: '#1E293B',
+  textSecondary: '#64748B',
+  border: '#E2E8F0',
+  success: '#10B981',
+  warning: '#F59E0B',
+  accent: '#F97316',
   card: '#FFFFFF',
-  cardAlt: '#F8F9FD',
-  highlight: '#F0F4FF',
+  cardAlt: '#F1F5F9',
+  highlight: '#EEF2FF',
 };
 
-// Dark theme colors
+// Dark theme colors with better contrast
 const darkColors = {
-  primary: '#7E7FEF', // Lighter for dark mode
-  primaryLight: '#9E9FFF',
-  primaryDark: '#4A4AB7',
-  secondary: '#64DFDF',
-  secondaryLight: '#80FFFF',
-  secondaryDark: '#48B9B9',
-  background: '#121212',
-  surface: '#1E1E1E',
-  error: '#FF5A5A',
-  text: '#E9ECEF',
-  textSecondary: '#ADB5BD',
-  border: '#333333',
-  success: '#52B788',
-  warning: '#FFD166',
-  accent: '#FF9F1C',
-  card: '#252525',
-  cardAlt: '#333333',
-  highlight: '#333366',
+  primary: '#818CF8',
+  primaryLight: '#A5B4FC',
+  primaryDark: '#4F46E5',
+  secondary: '#22D3EE',
+  secondaryLight: '#67E8F9',
+  secondaryDark: '#0891B2',
+  background: '#0F172A',
+  surface: '#1E293B',
+  error: '#EF4444',
+  text: '#F1F5F9',
+  textSecondary: '#94A3B8',
+  border: '#334155',
+  success: '#10B981',
+  warning: '#F59E0B',
+  accent: '#F97316',
+  card: '#1E293B',
+  cardAlt: '#334155',
+  highlight: '#312E81',
 };
 
-// Enhanced shadows for modern look
+// Enhanced shadows for more depth
 const lightShadows = {
   small: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
     elevation: 2,
   },
   medium: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 5,
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
     elevation: 4,
   },
   large: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.18,
-    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.16,
+    shadowRadius: 12,
     elevation: 8,
   },
 };
@@ -123,21 +124,21 @@ const darkShadows = {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
-    shadowRadius: 3,
+    shadowRadius: 4,
     elevation: 2,
   },
   medium: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
-    shadowRadius: 5,
+    shadowRadius: 6,
     elevation: 4,
   },
   large: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
+    shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.35,
-    shadowRadius: 8,
+    shadowRadius: 12,
     elevation: 8,
   },
 };

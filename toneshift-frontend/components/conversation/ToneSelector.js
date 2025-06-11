@@ -23,27 +23,35 @@ const ToneSelector = ({ selectedTone, onSelectTone, onClose }) => {
   const styles = StyleSheet.create({
     container: {
       marginBottom: spacing.m,
-      ...shadows.medium,
-      borderRadius: borderRadius.medium,
+      ...shadows.large,
+      borderRadius: borderRadius.xl,
       backgroundColor: colors.card,
+      borderWidth: 1,
+      borderColor: colors.border,
+      overflow: 'hidden',
     },
     toneRow: {
       flexDirection: 'row',
-      flexWrap: 'nowrap',
+      flexWrap: 'wrap',
       marginBottom: spacing.s,
-      paddingVertical: spacing.xs,
+      paddingVertical: spacing.m,
     },
     toneChip: {
       marginRight: spacing.s,
       marginBottom: spacing.s,
-      backgroundColor: colors.surface,
+      backgroundColor: colors.cardAlt,
+      borderRadius: borderRadius.large,
+      height: 40,
+      ...shadows.small,
     },
     selectedToneChip: {
       backgroundColor: colors.primary,
+      elevation: 4,
     },
     toneText: {
-      ...fonts.medium,
+      ...fonts.semiBold,
       color: colors.text,
+      letterSpacing: 0.3,
     },
     selectedToneText: {
       color: '#fff',
@@ -51,7 +59,9 @@ const ToneSelector = ({ selectedTone, onSelectTone, onClose }) => {
     helpText: {
       color: colors.textSecondary,
       fontSize: fonts.sizes.small,
-      marginTop: spacing.xs,
+      marginTop: spacing.s,
+      ...fonts.regular,
+      letterSpacing: 0.2,
     },
   });
 

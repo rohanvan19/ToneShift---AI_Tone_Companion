@@ -27,28 +27,37 @@ const ConversationListScreen = ({ navigation }) => {
     },
     searchBar: {
       backgroundColor: colors.surface,
+      borderRadius: borderRadius.large,
+      height: 50,
       ...shadows.small,
     },
     listContent: {
       padding: spacing.m,
-      paddingBottom: spacing.xxl, // Extra padding for FAB
+      paddingBottom: spacing.xxxl, // Extra padding for FAB
     },
     card: {
       marginBottom: spacing.m,
       backgroundColor: colors.card,
-      ...shadows.small,
+      borderRadius: borderRadius.large,
+      overflow: 'hidden',
+      ...shadows.medium,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
     conversationTitle: {
-      ...fonts.medium,
+      ...fonts.semiBold,
       fontSize: fonts.sizes.large,
       marginBottom: spacing.xs,
       color: colors.text,
     },
     lastMessage: {
+      ...fonts.regular,
       color: colors.textSecondary,
-      marginBottom: spacing.xs,
+      marginBottom: spacing.s,
+      lineHeight: 20,
     },
     timestamp: {
+      ...fonts.medium,
       color: colors.textSecondary,
       fontSize: fonts.sizes.xs,
       alignSelf: 'flex-end',
@@ -89,6 +98,10 @@ const ConversationListScreen = ({ navigation }) => {
       right: 0,
       bottom: 0,
       backgroundColor: colors.primary,
+      borderRadius: borderRadius.round,
+      ...shadows.large,
+      width: 60,
+      height: 60,
     },
   });
   
