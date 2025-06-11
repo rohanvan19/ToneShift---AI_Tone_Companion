@@ -7,8 +7,9 @@ import {
   Platform,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
-import { Text, TextInput, IconButton, Menu, Divider } from 'react-native-paper';
+import { Text, TextInput, IconButton, Menu, Divider, Dialog, Button, Portal } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { conversationApi, responseApi } from '../../utils/api';
@@ -129,6 +130,9 @@ const ConversationDetailScreen = ({ route, navigation }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showToneSelector, setShowToneSelector] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
+  const [renameDialogVisible, setRenameDialogVisible] = useState(false);
+  const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+  const [newTitle, setNewTitle] = useState('');
   const flatListRef = useRef(null);
 
   useEffect(() => {
@@ -152,17 +156,17 @@ const ConversationDetailScreen = ({ route, navigation }) => {
           <Menu.Item
             onPress={() => {
               setMenuVisible(false);
-              navigation.navigate('EditConversation', { conversation });
+              setNewTitle(conversation?.title || '');
+              setRenameDialogVisible(true);
             }}
-            title="Edit Conversation"
+            title="Rename Conversation"
             leadingIcon="pencil"
           />
           <Divider />
           <Menu.Item
             onPress={() => {
               setMenuVisible(false);
-              // Show delete confirmation
-              // ...
+              setDeleteDialogVisible(true);
             }}
             title="Delete Conversation"
             leadingIcon="delete"
@@ -242,6 +246,44 @@ const ConversationDetailScreen = ({ route, navigation }) => {
     }
   };
 
+  const handleRenameConversation = async () => {
+    if (!newTitle.trim()) {
+      return;
+    }
+    
+    try {
+      await conversationApi.update(conversationId, {
+        title: newTitle
+      });
+      
+      // Update local state and navigation title
+      setConversation({
+        ...conversation,
+        title: newTitle
+      });
+      
+      navigation.setOptions({
+        title: newTitle
+      });
+      
+      setRenameDialogVisible(false);
+    } catch (error) {
+      console.error('Error renaming conversation:', error);
+      Alert.alert('Error', 'Failed to rename conversation');
+    }
+  };
+  
+  const handleDeleteConversation = async () => {
+    try {
+      await conversationApi.delete(conversationId);
+      setDeleteDialogVisible(false);
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error deleting conversation:', error);
+      Alert.alert('Error', 'Failed to delete conversation');
+    }
+  };
+  
   const renderMessage = ({ item }) => <MessageBubble message={item} />;
 
   if (!conversation && loading) {
@@ -254,6 +296,35 @@ const ConversationDetailScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
+      <Portal>
+        <Dialog visible={renameDialogVisible} onDismiss={() => setRenameDialogVisible(false)}>
+          <Dialog.Title>Rename Conversation</Dialog.Title>
+          <Dialog.Content>
+            <TextInput
+              value={newTitle}
+              onChangeText={setNewTitle}
+              style={{ marginTop: 10 }}
+              mode="outlined"
+            />
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setRenameDialogVisible(false)}>Cancel</Button>
+            <Button onPress={handleRenameConversation}>Rename</Button>
+          </Dialog.Actions>
+        </Dialog>
+        
+        <Dialog visible={deleteDialogVisible} onDismiss={() => setDeleteDialogVisible(false)}>
+          <Dialog.Title>Delete Conversation</Dialog.Title>
+          <Dialog.Content>
+            <Text>Are you sure you want to delete this conversation? This action cannot be undone.</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setDeleteDialogVisible(false)}>Cancel</Button>
+            <Button onPress={handleDeleteConversation} color={colors.error}>Delete</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoid}

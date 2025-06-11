@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { Text, Card, FAB, ActivityIndicator, TextInput } from 'react-native-paper';
+import { View, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { Text, Card, FAB, ActivityIndicator, TextInput, Menu, IconButton, Dialog, Button, Portal } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { conversationApi } from '../../utils/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -110,6 +110,12 @@ const ConversationListScreen = ({ navigation }) => {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredConversations, setFilteredConversations] = useState([]);
+  const [selectedConversation, setSelectedConversation] = useState(null);
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  const [renameDialogVisible, setRenameDialogVisible] = useState(false);
+  const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+  const [newTitle, setNewTitle] = useState('');
 
   useEffect(() => {
     fetchConversations();
@@ -158,33 +164,103 @@ const ConversationListScreen = ({ navigation }) => {
       title: conversation.title
     });
   };
-
-  const handleCreateConversation = async () => {
+  
+  const handleConversationLongPress = (conversation, event) => {
+    // Save the selected conversation and show menu
+    setSelectedConversation(conversation);
+    setMenuVisible(true);
+  };
+  
+  const handleRenameConversation = async () => {
+    if (!newTitle.trim() || !selectedConversation) {
+      return;
+    }
+    
     try {
-      // Create a new conversation with a default title
-      // You could add a modal here to let the user enter a title
-      const title = "New Conversation";
-      const response = await conversationApi.create({
-        title,
-        context: '', // Optional context
+      await conversationApi.update(selectedConversation.id, {
+        title: newTitle
       });
       
-      console.log('Conversation created:', response.data);
+      // Update local state
+      const updatedConversations = conversations.map(convo => 
+        convo.id === selectedConversation.id 
+          ? { ...convo, title: newTitle } 
+          : convo
+      );
       
-      // Refresh the conversation list
-      await fetchConversations();
+      setConversations(updatedConversations);
+      setFilteredConversations(
+        updatedConversations.filter(convo => 
+          convo.title.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
       
-      // Navigate to the new conversation
+      setRenameDialogVisible(false);
+    } catch (error) {
+      console.error('Error renaming conversation:', error);
+      Alert.alert('Error', 'Failed to rename conversation');
+    }
+  };
+  
+  const handleDeleteConversation = async () => {
+    if (!selectedConversation) {
+      return;
+    }
+    
+    try {
+      await conversationApi.delete(selectedConversation.id);
+      
+      // Update local state
+      const updatedConversations = conversations.filter(
+        convo => convo.id !== selectedConversation.id
+      );
+      
+      setConversations(updatedConversations);
+      setFilteredConversations(
+        updatedConversations.filter(convo => 
+          convo.title.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+      
+      setDeleteDialogVisible(false);
+    } catch (error) {
+      console.error('Error deleting conversation:', error);
+      Alert.alert('Error', 'Failed to delete conversation');
+    }
+  };
+  
+  const handleCreateConversation = async () => {
+    try {
+      // Create a default title (can be updated later)
+      const defaultTitle = `New Conversation ${new Date().toLocaleString()}`;
+      
+      // Create the conversation via API
+      const response = await conversationApi.create({ 
+        title: defaultTitle
+      });
+      
+      // Navigate to the newly created conversation
       if (response.data && response.data.conversation) {
+        const newConversation = response.data.conversation;
+        
+        // Add to state for immediate UI update
+        const updatedConversations = [newConversation, ...conversations];
+        setConversations(updatedConversations);
+        setFilteredConversations(
+          updatedConversations.filter(convo => 
+            convo.title.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+        );
+        
+        // Navigate to the new conversation
         navigation.navigate('ConversationDetail', {
-          conversationId: response.data.conversation.id,
-          title: response.data.conversation.title
+          conversationId: newConversation.id,
+          title: newConversation.title
         });
       }
     } catch (error) {
       console.error('Error creating conversation:', error);
-      // Show error to user
-      alert('Failed to create a new conversation. Please try again.');
+      Alert.alert('Error', 'Failed to create a new conversation');
     }
   };
 
@@ -200,10 +276,24 @@ const ConversationListScreen = ({ navigation }) => {
       : 'No messages yet';
 
     return (
-      <TouchableOpacity onPress={() => handleConversationPress(item)}>
+      <TouchableOpacity 
+        onPress={() => handleConversationPress(item)}
+        onLongPress={(event) => handleConversationLongPress(item, event)}
+        delayLongPress={500}
+      >
         <Card style={styles.card}>
           <Card.Content>
-            <Text style={styles.conversationTitle}>{item.title}</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text style={styles.conversationTitle}>{item.title}</Text>
+              <IconButton
+                icon="dots-vertical"
+                size={20}
+                onPress={() => {
+                  setSelectedConversation(item);
+                  setMenuVisible(true);
+                }}
+              />
+            </View>
             <Text style={styles.lastMessage}>
               {lastMessage ? lastMessage.content.substring(0, 60) + (lastMessage.content.length > 60 ? '...' : '') : 'No messages yet'}
             </Text>
@@ -213,7 +303,7 @@ const ConversationListScreen = ({ navigation }) => {
       </TouchableOpacity>
     );
   };
-
+  
   if (loading && conversations.length === 0) {
     return (
       <View style={styles.centered}>
@@ -235,6 +325,60 @@ const ConversationListScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
+      {/* Add dialogs */}
+      <Portal>
+        <Menu
+          visible={menuVisible}
+          onDismiss={() => setMenuVisible(false)}
+          anchor={menuPosition}
+        >
+          <Menu.Item 
+            onPress={() => {
+              setMenuVisible(false);
+              setNewTitle(selectedConversation?.title || '');
+              setRenameDialogVisible(true);
+            }} 
+            title="Rename Conversation" 
+            leadingIcon="pencil"
+          />
+          <Menu.Item 
+            onPress={() => {
+              setMenuVisible(false);
+              setDeleteDialogVisible(true);
+            }} 
+            title="Delete Conversation" 
+            leadingIcon="delete"
+          />
+        </Menu>
+
+        <Dialog visible={renameDialogVisible} onDismiss={() => setRenameDialogVisible(false)}>
+          <Dialog.Title>Rename Conversation</Dialog.Title>
+          <Dialog.Content>
+            <TextInput
+              value={newTitle}
+              onChangeText={setNewTitle}
+              style={{ marginTop: 10 }}
+              mode="outlined"
+            />
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setRenameDialogVisible(false)}>Cancel</Button>
+            <Button onPress={handleRenameConversation}>Rename</Button>
+          </Dialog.Actions>
+        </Dialog>
+        
+        <Dialog visible={deleteDialogVisible} onDismiss={() => setDeleteDialogVisible(false)}>
+          <Dialog.Title>Delete Conversation</Dialog.Title>
+          <Dialog.Content>
+            <Text>Are you sure you want to delete this conversation? This action cannot be undone.</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setDeleteDialogVisible(false)}>Cancel</Button>
+            <Button onPress={handleDeleteConversation} color={colors.error}>Delete</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+      
       {/* Replace the Searchbar with a custom search input */}
       <View style={styles.searchContainer}>
         <TextInput
