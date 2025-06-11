@@ -155,8 +155,11 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: spacing.m,
-    paddingVertical: spacing.xs,
+    paddingVertical: spacing.s,
     backgroundColor: colors.primary,
+    borderRadius: borderRadius.medium,
+    elevation: 2,
+    height: 48,
   },
   footer: {
     flexDirection: 'row',

@@ -269,19 +269,22 @@ const styles = StyleSheet.create({
   },
   toneChip: {
     paddingHorizontal: spacing.m,
-    paddingVertical: spacing.xs,
+    paddingVertical: spacing.s,
     borderRadius: borderRadius.round,
     marginRight: spacing.s,
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
+    elevation: 1,
+    marginBottom: spacing.xs,
   },
   selectedToneChip: {
     backgroundColor: colors.primary,
     borderColor: colors.primary,
+    elevation: 3,
   },
   toneChipText: {
-    ...fonts.medium,
+    ...fonts.semiBold,
     color: colors.textSecondary,
   },
   selectedToneChipText: {

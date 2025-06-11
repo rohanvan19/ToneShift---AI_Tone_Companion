@@ -24,9 +24,13 @@ export default function App() {
       let userData = null;
       
       try {
-        // Fix: Use the proper font name for MaterialCommunityIcons
+        // Load all required fonts
         await Font.loadAsync({
           'MaterialCommunityIcons': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'),
+          'OpenSans-Regular': require('./assets/fonts/OpenSans-Regular.ttf'),
+          'OpenSans-Medium': require('./assets/fonts/OpenSans-Medium.ttf'),
+          'OpenSans-SemiBold': require('./assets/fonts/OpenSans-SemiBold.ttf'),
+          'OpenSans-Bold': require('./assets/fonts/OpenSans-Bold.ttf'),
         });
         
         userToken = await AsyncStorage.getItem('token');

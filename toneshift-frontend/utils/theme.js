@@ -1,38 +1,41 @@
-import * as Font from 'expo-font';
 import { Platform } from 'react-native';
 
 export const colors = {
-  primary: '#6200ea',
-  primaryLight: '#9d46ff',
-  primaryDark: '#0a00b6',
-  secondary: '#03dac6',
-  secondaryLight: '#66fff9',
-  secondaryDark: '#00a896',
-  background: '#f5f5f5',
-  surface: '#ffffff',
-  error: '#b00020',
-  text: '#121212',
-  textSecondary: '#757575',
-  border: '#e0e0e0',
-  success: '#4CAF50',
-  warning: '#FFC107',
+  // Modern color palette
+  primary: '#5E60CE',
+  primaryLight: '#7E7FEF',
+  primaryDark: '#4A4AB7',
+  secondary: '#64DFDF',
+  secondaryLight: '#80FFFF',
+  secondaryDark: '#48B9B9',
+  background: '#F8F9FA',
+  surface: '#FFFFFF',
+  error: '#FF5A5A',
+  text: '#212529',
+  textSecondary: '#6C757D',
+  border: '#E9ECEF',
+  success: '#52B788',
+  warning: '#FFD166',
+  accent: '#FF9F1C',
 };
 
+// Updated font configuration with Open Sans
 export const fonts = {
   regular: {
-    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
-    fontWeight: '400',
-    letterSpacing: 0.3,
+    fontFamily: 'OpenSans-Regular',
+    letterSpacing: 0.2,
   },
   medium: {
-    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
-    fontWeight: '500',
-    letterSpacing: 0.3,
+    fontFamily: 'OpenSans-Medium',
+    letterSpacing: 0.2,
+  },
+  semiBold: {
+    fontFamily: 'OpenSans-SemiBold',
+    letterSpacing: 0.2,
   },
   bold: {
-    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
-    fontWeight: '700',
-    letterSpacing: 0.3,
+    fontFamily: 'OpenSans-Bold',
+    letterSpacing: 0.2,
   },
   sizes: {
     xs: 12,
@@ -45,6 +48,7 @@ export const fonts = {
   },
 };
 
+// Modern spacing
 export const spacing = {
   xs: 4,
   s: 8,
@@ -54,35 +58,37 @@ export const spacing = {
   xxl: 48,
 };
 
+// Enhanced shadows for modern look
 export const shadows = {
   small: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
     elevation: 2,
   },
   medium: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 5,
     elevation: 4,
   },
   large: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
     elevation: 8,
   },
 };
 
+// Modern border radiuses
 export const borderRadius = {
-  small: 4,
-  medium: 8,
-  large: 12,
-  xl: 20,
+  small: 6,
+  medium: 10,
+  large: 16,
+  xl: 24,
   round: 999,
 };
 

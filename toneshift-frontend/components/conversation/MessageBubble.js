@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, Card } from 'react-native-paper';
-import { colors, spacing, fonts, borderRadius } from '../../utils/theme';
+import { colors, spacing, fonts, shadows, borderRadius } from '../../utils/theme';
 
 const MessageBubble = ({ message }) => {
   const isUser = message.sender === 'user';
@@ -18,7 +18,7 @@ const MessageBubble = ({ message }) => {
         styles.bubble, 
         isUser ? styles.userBubble : styles.aiBubble
       ]}>
-        <Card.Content>
+        <Card.Content style={styles.contentPadding}>
           <Text style={[styles.messageText, isUser ? styles.userText : styles.aiText]}>
             {message.content}
           </Text>
@@ -39,7 +39,7 @@ const MessageBubble = ({ message }) => {
 const styles = StyleSheet.create({
   container: {
     marginBottom: spacing.m,
-    maxWidth: '80%',
+    maxWidth: '85%',
   },
   userContainer: {
     alignSelf: 'flex-end',
@@ -49,6 +49,10 @@ const styles = StyleSheet.create({
   },
   bubble: {
     borderRadius: borderRadius.large,
+    ...shadows.small,
+  },
+  contentPadding: {
+    padding: spacing.s,
   },
   userBubble: {
     backgroundColor: colors.primary,
@@ -59,7 +63,9 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   messageText: {
+    ...fonts.regular,
     fontSize: fonts.sizes.medium,
+    lineHeight: 22,
   },
   userText: {
     color: '#fff',
@@ -81,12 +87,14 @@ const styles = StyleSheet.create({
   timeText: {
     fontSize: fonts.sizes.xs,
     color: colors.textSecondary,
+    ...fonts.regular,
   },
   toneText: {
     fontSize: fonts.sizes.xs,
     color: colors.secondary,
     marginRight: spacing.s,
     fontStyle: 'italic',
+    ...fonts.medium,
   },
 });
 
