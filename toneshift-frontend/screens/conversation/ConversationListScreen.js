@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { Text, Card, FAB, ActivityIndicator, Searchbar } from 'react-native-paper';
+import { Text, Card, FAB, ActivityIndicator, TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { conversationApi } from '../../utils/api';
 import { colors, spacing, fonts, shadows, borderRadius } from '../../utils/theme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ConversationListScreen = ({ navigation }) => {
   const [conversations, setConversations] = useState([]);
@@ -14,6 +15,16 @@ const ConversationListScreen = ({ navigation }) => {
 
   useEffect(() => {
     fetchConversations();
+  }, []);
+
+  // Add this at the top of your component
+  useEffect(() => {
+    // Debug authentication
+    const checkAuth = async () => {
+      const token = await AsyncStorage.getItem('token');
+      console.log('Current auth token:', token ? 'Present' : 'Not found');
+    };
+    checkAuth();
   }, []);
 
   useEffect(() => {
@@ -27,13 +38,16 @@ const ConversationListScreen = ({ navigation }) => {
 
   const fetchConversations = async () => {
     setLoading(true);
+    console.log('Fetching conversations...');
     try {
       const response = await conversationApi.getAll();
+      console.log('API response:', response.data);
       setConversations(response.data.conversations || []);
       setFilteredConversations(response.data.conversations || []);
       setError(null);
     } catch (error) {
       console.error('Error fetching conversations:', error);
+      console.error('Error details:', error.response?.data || error.message);
       setError('Failed to load conversations. Please try again.');
     } finally {
       setLoading(false);
@@ -100,12 +114,17 @@ const ConversationListScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      <Searchbar
-        placeholder="Search conversations..."
-        onChangeText={setSearchQuery}
-        value={searchQuery}
-        style={styles.searchBar}
-      />
+      {/* Replace the Searchbar with a custom search input */}
+      <View style={styles.searchContainer}>
+        <TextInput
+          placeholder="Search conversations..."
+          onChangeText={setSearchQuery}
+          value={searchQuery}
+          style={styles.searchBar}
+          left={<TextInput.Icon icon="magnify" />}
+          mode="outlined"
+        />
+      </View>
       
       {filteredConversations.length === 0 ? (
         <View style={styles.emptyContainer}>
@@ -146,9 +165,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: spacing.l,
   },
-  searchBar: {
+  searchContainer: {
     margin: spacing.m,
-    elevation: 0,
+  },
+  searchBar: {
     backgroundColor: colors.surface,
     ...shadows.small,
   },

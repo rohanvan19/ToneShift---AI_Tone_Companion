@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { authApi } from '../../utils/api';
 import { AuthContext } from '../../utils/auth';
 import { colors, spacing, fonts, shadows, borderRadius } from '../../utils/theme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -33,7 +34,11 @@ const LoginScreen = ({ navigation }) => {
     try {
       const response = await authApi.login({ email, password });
       const { token, user } = response.data;
-      signIn(token, user);
+      console.log('Login successful, token received:', token ? 'YES' : 'NO');
+      await signIn(token, user);
+      // After login, verify token was stored
+      const storedToken = await AsyncStorage.getItem('token');
+      console.log('Token stored successfully:', storedToken ? 'YES' : 'NO');
     } catch (err) {
       console.error('Login error:', err);
       setError(

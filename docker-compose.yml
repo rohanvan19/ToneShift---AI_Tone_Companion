@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Backend API service
   backend:
@@ -19,11 +17,14 @@ services:
       - DB_PASSWORD=qwedsa
       - JWT_SECRET=your_jwt_secret_key_change_this_in_production
       - JWT_EXPIRES_IN=7d
-      - OLLAMA_API_URL=http://ollama:11434/api
+      - OLLAMA_API_URL=http://localhost:11434/api
       - OLLAMA_MODEL=gemma3:4b
     volumes:
       - ./toneshift-backend:/app
       - /app/node_modules
+    restart: unless-stopped
+    networks:
+      - toneshift_net
 
   # Frontend service
   frontend:
@@ -33,13 +34,15 @@ services:
       - "19006:19006"  # Expose web port
     environment:
       - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
-      - REACT_NATIVE_PACKAGER_HOSTNAME=0.0.0.0
+      - REACT_NATIVE_PACKAGER_HOSTNAME=localhost
     volumes:
       - ./toneshift-frontend:/app
-      - /app/node_modules
     depends_on:
       - backend
-    command: ["npm", "run", "web", "--", "--host", "0.0.0.0"]
+    command: ["npm", "run", "web"]
+    restart: unless-stopped
+    networks:
+      - toneshift_net
 
   # PostgreSQL database
   postgres:
@@ -52,6 +55,9 @@ services:
       - POSTGRES_DB=toneshift
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - toneshift_net
 
   # Ollama service for AI model inference
   ollama:
@@ -60,6 +66,9 @@ services:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
+    restart: unless-stopped
+    networks:
+      - toneshift_net
 
 volumes:
   postgres_data:
@@ -67,6 +76,5 @@ volumes:
 
 # Fixed network configuration
 networks:
-  default:
+  toneshift_net:
     driver: bridge
-    attachable: true
