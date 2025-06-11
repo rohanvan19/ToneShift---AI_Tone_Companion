@@ -3,7 +3,8 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as PaperProvider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AppNavigator from './navigation';
+import * as Font from 'expo-font';
+import Navigation from './navigation';
 import { AuthContext } from './utils/auth';
 import { colors } from './utils/theme';
 
@@ -13,25 +14,31 @@ export default function App() {
     isSignout: false,
     userToken: null,
     userData: null,
+    fontsLoaded: false,
   });
 
   useEffect(() => {
-    // Check for stored token and user data
+    // Load fonts and check for stored token and user data
     const bootstrapAsync = async () => {
       let userToken = null;
       let userData = null;
       
       try {
+        // Fix: Use the proper font name for MaterialCommunityIcons
+        await Font.loadAsync({
+          'MaterialCommunityIcons': require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'),
+        });
+        
         userToken = await AsyncStorage.getItem('token');
         const storedUserData = await AsyncStorage.getItem('userData');
         if (storedUserData) {
           userData = JSON.parse(storedUserData);
         }
       } catch (e) {
-        console.log('Failed to get data from storage', e);
+        console.log('Failed to load resources', e);
       }
 
-      setState({ ...state, isLoading: false, userToken, userData });
+      setState({ ...state, isLoading: false, userToken, userData, fontsLoaded: true });
     };
 
     bootstrapAsync();
@@ -81,12 +88,16 @@ export default function App() {
     },
   };
 
+  if (!state.fontsLoaded) {
+    return null; // You can also return a loading indicator here
+  }
+
   return (
     <AuthContext.Provider value={{ ...authContext, ...state }}>
       <PaperProvider theme={theme}>
         <SafeAreaProvider>
           <StatusBar style="auto" />
-          <AppNavigator />
+          <Navigation />
         </SafeAreaProvider>
       </PaperProvider>
     </AuthContext.Provider>

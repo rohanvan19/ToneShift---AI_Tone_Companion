@@ -1,3 +1,6 @@
+import * as Font from 'expo-font';
+import { Platform } from 'react-native';
+
 export const colors = {
   primary: '#6200ea',
   primaryLight: '#9d46ff',
@@ -17,24 +20,27 @@ export const colors = {
 
 export const fonts = {
   regular: {
-    fontFamily: 'System',
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
     fontWeight: '400',
+    letterSpacing: 0.3,
   },
   medium: {
-    fontFamily: 'System',
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
     fontWeight: '500',
+    letterSpacing: 0.3,
   },
   bold: {
-    fontFamily: 'System',
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Roboto',
     fontWeight: '700',
+    letterSpacing: 0.3,
   },
   sizes: {
     xs: 12,
     small: 14,
     medium: 16,
     large: 18,
-    xl: 20,
-    xxl: 24,
+    xl: 22,
+    xxl: 26,
     xxxl: 32,
   },
 };

@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import { Text, TextInput, IconButton, Menu, Divider } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -177,13 +178,34 @@ const ConversationDetailScreen = ({ route, navigation }) => {
         )}
 
         <View style={styles.inputContainer}>
-          <TouchableOpacity
-            style={styles.toneButton}
-            onPress={() => setShowToneSelector(!showToneSelector)}
-          >
-            <Text style={styles.toneButtonText}>{selectedTone}</Text>
-            <Icon name="chevron-up" size={16} color={colors.primary} />
-          </TouchableOpacity>
+          <View style={styles.toneContainer}>
+            <Text style={styles.toneLabel}>Tone:</Text>
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false}
+              style={styles.toneScrollView}
+            >
+              {['Professional', 'Casual', 'Friendly', 'Funny', 'Formal', 'Empathetic', 'Direct', 'Enthusiastic'].map((tone) => (
+                <TouchableOpacity
+                  key={tone}
+                  style={[
+                    styles.toneChip,
+                    selectedTone === tone && styles.selectedToneChip
+                  ]}
+                  onPress={() => setSelectedTone(tone)}
+                >
+                  <Text 
+                    style={[
+                      styles.toneChipText,
+                      selectedTone === tone && styles.selectedToneChipText
+                    ]}
+                  >
+                    {tone}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
 
           <View style={styles.inputRow}>
             <TextInput
@@ -234,17 +256,36 @@ const styles = StyleSheet.create({
     padding: spacing.m,
     ...shadows.small,
   },
-  toneButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.s,
-    paddingHorizontal: spacing.s,
-    alignSelf: 'flex-start',
+  toneContainer: {
+    marginBottom: spacing.m,
   },
-  toneButtonText: {
-    color: colors.primary,
+  toneLabel: {
     ...fonts.medium,
-    marginRight: spacing.xs,
+    color: colors.textSecondary,
+    marginBottom: spacing.xs,
+  },
+  toneScrollView: {
+    flexDirection: 'row',
+  },
+  toneChip: {
+    paddingHorizontal: spacing.m,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.round,
+    marginRight: spacing.s,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  selectedToneChip: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  toneChipText: {
+    ...fonts.medium,
+    color: colors.textSecondary,
+  },
+  selectedToneChipText: {
+    color: '#fff',
   },
   inputRow: {
     flexDirection: 'row',
