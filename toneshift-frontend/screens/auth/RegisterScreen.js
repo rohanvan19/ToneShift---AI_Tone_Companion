@@ -78,6 +78,10 @@ const RegisterScreen = ({ navigation }) => {
               onChangeText={setUsername}
               style={styles.input}
               autoCapitalize="none"
+              theme={{ colors: { text: 'black', placeholder: 'rgba(0, 0, 0, 0.6)' } }}
+              textColor="black"
+              outlineColor={colors.border}
+              activeOutlineColor={colors.primary}
             />
 
             <TextInput
@@ -87,6 +91,10 @@ const RegisterScreen = ({ navigation }) => {
               style={styles.input}
               autoCapitalize="none"
               keyboardType="email-address"
+              theme={{ colors: { text: 'black', placeholder: 'rgba(0, 0, 0, 0.6)' } }}
+              textColor="black"
+              outlineColor={colors.border}
+              activeOutlineColor={colors.primary}
             />
 
             <TextInput
@@ -95,6 +103,10 @@ const RegisterScreen = ({ navigation }) => {
               onChangeText={setPassword}
               secureTextEntry
               style={styles.input}
+              theme={{ colors: { text: 'black', placeholder: 'rgba(0, 0, 0, 0.6)' } }}
+              textColor="black"
+              outlineColor={colors.border}
+              activeOutlineColor={colors.primary}
             />
 
             <TextInput
@@ -103,6 +115,10 @@ const RegisterScreen = ({ navigation }) => {
               onChangeText={setConfirmPassword}
               secureTextEntry
               style={styles.input}
+              theme={{ colors: { text: 'black', placeholder: 'rgba(0, 0, 0, 0.6)' } }}
+              textColor="black"
+              outlineColor={colors.border}
+              activeOutlineColor={colors.primary}
             />
 
             <Button
@@ -153,7 +169,7 @@ const styles = StyleSheet.create({
   title: {
     ...fonts.bold,
     fontSize: 28,
-    color: colors.primary,
+    color: 'black', // Changed from colors.primary
     marginBottom: spacing.l,
     textAlign: 'center',
   },
@@ -166,6 +182,11 @@ const styles = StyleSheet.create({
   input: {
     marginBottom: spacing.m,
     backgroundColor: colors.surface,
+    color: 'black', // Changed from colors.text
+    borderRadius: borderRadius.large,
+    height: 56,
+    fontSize: fonts.sizes.medium,
+    ...fonts.regular,
   },
   button: {
     marginTop: spacing.m,
@@ -179,12 +200,12 @@ const styles = StyleSheet.create({
   },
   footerText: {
     ...fonts.regular,
-    color: colors.textSecondary,
+    color: 'black', // Changed from colors.textSecondary
     marginRight: spacing.xs,
   },
   linkText: {
     ...fonts.medium,
-    color: colors.primary,
+    color: 'black', // Changed from colors.primary
   },
   snackbar: {
     backgroundColor: colors.error,

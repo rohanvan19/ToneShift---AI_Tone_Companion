@@ -12,8 +12,15 @@ RUN npm install
 # Copy application code
 COPY . .
 
-# Expose the port the app runs on
+# Expose API port
 EXPOSE 5000
 
-# Command to run the application
-CMD ["npm", "start"]
+# Set environment variables
+ENV NODE_ENV=development
+ENV PORT=5000
+
+# # Command to run the application
+# CMD ["npm", "start"]
+
+# Start the server
+CMD ["node", "src/index.js"]

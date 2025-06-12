@@ -84,3 +84,41 @@ docker-compose exec ollama ollama pull gemma3:4b
 ### Access the Application
 - **Frontend:** [http://localhost:19006](http://localhost:19006)
 - **Backend API:** [http://localhost:5000](http://localhost:5000)
+
+## 📸 Screenshots
+
+### Authentication Screens
+![Login Screen](screenshots/login.png)
+*The login screen with email and password authentication*
+
+![Register Screen](screenshots/register.png)
+*User registration with username, email and password*
+
+### Main Features
+![Conversation List](screenshots/list.png)
+*Browse and manage your conversations*
+
+### Tone Transformation Examples
+![Professional Tone](screenshots/professional.png)
+*Example of text transformed to Professional tone*
+
+![Professional Tone](screenshots/friendly.png)
+*Example of text transformed to Friendly tone*
+
+![Professional Tone](screenshots/empathetic.png)
+*Example of text transformed to Empathetic tone*
+
+![Professional Tone](screenshots/formal.png)
+*Example of text transformed to Formal tone*
+
+![Professional Tone](screenshots/funny.png)
+*Example of text transformed to Funny tone*
+
+![Professional Tone](screenshots/direct.png)
+*Example of text transformed to Direct tone*
+
+![Casual Tone](screenshots/casual.png)
+*Example of text transformed to Casual tone*
+
+![Profile Settings](screenshots/profile.png)
+*Customize your profile and application preferences*

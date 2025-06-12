@@ -73,6 +73,7 @@ const LoginScreen = ({ navigation }) => {
               style={styles.input}
               autoCapitalize="none"
               keyboardType="email-address"
+              theme={{ colors: { text: 'black', placeholder: 'rgba(0, 0, 0, 0.6)' } }}
             />
 
             <TextInput
@@ -81,6 +82,7 @@ const LoginScreen = ({ navigation }) => {
               onChangeText={setPassword}
               secureTextEntry
               style={styles.input}
+              theme={{ colors: { text: 'black', placeholder: 'rgba(0, 0, 0, 0.6)' } }}
             />
 
             <Button
@@ -135,14 +137,14 @@ const styles = StyleSheet.create({
   logoText: {
     ...fonts.bold,
     fontSize: 42,
-    color: colors.primary,
+    color: 'black',
     marginBottom: spacing.s,
     letterSpacing: 1.2,
   },
   tagline: {
     ...fonts.medium,
     fontSize: fonts.sizes.medium,
-    color: colors.textSecondary,
+    color: 'black',
     letterSpacing: 0.5,
   },
   formContainer: {
@@ -159,6 +161,7 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.large,
     height: 56,
     fontSize: fonts.sizes.medium,
+    color: 'black',
     ...fonts.regular,
   },
   button: {
@@ -178,12 +181,12 @@ const styles = StyleSheet.create({
   },
   footerText: {
     ...fonts.regular,
-    color: colors.textSecondary,
+    color: 'black',
     marginRight: spacing.xs,
   },
   linkText: {
     ...fonts.medium,
-    color: colors.primary,
+    color: 'black',
   },
   snackbar: {
     backgroundColor: colors.error,
