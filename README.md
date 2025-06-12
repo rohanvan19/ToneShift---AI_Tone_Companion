@@ -89,39 +89,49 @@ docker-compose exec ollama ollama pull gemma3:4b
 
 ### Authentication Screens
 
-*The login screen with email and password authentication*
+**The login screen with email and password authentication**
+
 ![Login Screen](screenshots/login.png)
 
-*User registration with username, email and password*
+**User registration with username, email and password**
+
 ![Register Screen](screenshots/register.png)
 
-*Browse and manage your conversations*
-### Main Features
+**Browse and manage your conversations**
+
 ![Conversation List](screenshots/list.png)
 
-### Tone Transformation Examples
+### Main Features - Tone Transformation Examples
 
-*Example of text transformed to Professional tone*
+**Example of text transformed to Professional tone**
+
 ![Professional Tone](screenshots/professional.png)
 
-*Example of text transformed to Friendly tone*
+**Example of text transformed to Friendly tone**
+
 ![Professional Tone](screenshots/friendly.png)
 
-*Example of text transformed to Empathetic tone*
+**Example of text transformed to Empathetic tone**
+
 ![Professional Tone](screenshots/empathetic.png)
 
-*Example of text transformed to Formal tone*
+**Example of text transformed to Formal tone**
+
 ![Professional Tone](screenshots/formal.png)
 
-*Example of text transformed to Funny tone*
+**Example of text transformed to Funny tone**
+
 ![Professional Tone](screenshots/funny.png)
 
-*Example of text transformed to Direct tone*
+**Example of text transformed to Direct tone**
+
 ![Professional Tone](screenshots/direct.png)
 
-*Example of text transformed to Casual tone*
+**Example of text transformed to Casual tone**
+
 ![Casual Tone](screenshots/casual.png)
 
-*Customize your profile and application preferences*
+**Customize your profile and application preferences**
+
 ![Profile Settings](screenshots/profile.png)
 
